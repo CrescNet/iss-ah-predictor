@@ -1,0 +1,15 @@
+.*
+*~
+*.tar.gz
+!.gitignore
+!.perltidyrc
+!/.github
+/local
+/blib
+/pm_to_blib
+/Makefile
+/Makefile.old
+/MANIFEST*
+!MANIFEST.SKIP
+/META.*
+/MYMETA.*
