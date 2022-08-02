@@ -6,7 +6,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME         => 'Iss::Ah::Predictor',
-    VERSION_FROM => 'lib/xDT/Parser.pm',
+    VERSION_FROM => 'lib/ISS/AH/Predictor.pm',
     ABSTRACT     => 'ISS AH Predictor',
     AUTHOR       => 'Christoph Beger <christoph.beger@medizin.uni-leipzig.de>',
     LICENSE      => 'MIT',
