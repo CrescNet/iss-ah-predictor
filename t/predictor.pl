@@ -65,7 +65,7 @@ subtest 'should perform prediction', sub {
     bone_age      => 12,
     sex           => 'male',
   );
-  is $prediction, 164.6488, 'intercept param as expected';
+  is $prediction, 164.6488, 'prediction as expected';
 
   $prediction = ISS::AH::Predictor::predict(
     age => 12
