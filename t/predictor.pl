@@ -6,7 +6,19 @@ use Test::More;
 
 use ISS::AH::Predictor;
 
-plan tests => 1;
+plan tests => 3;
+
+subtest 'should modify params', sub {
+  my %params = ISS::AH::Predictor::_modify_params(
+    age      => 12,
+    bone_age => 12,
+  );
+  is_deeply \%params, {
+    age              => 12,
+    bone_age         => 12,
+    bone_age_per_age => 1,
+  }, 'params as expected';
+};
 
 subtest 'should get model', sub {
   my $model = ISS::AH::Predictor::get_model(
@@ -38,11 +50,27 @@ subtest 'should get model', sub {
   ok !$model, 'empty custom models, no model retrieved';
 
   $model = ISS::AH::Predictor::get_model(
-    bone_age => 12,
-    models   => [ [ 1, undef, undef, undef, undef, undef, 1 ] ],
+    age => 12,
+    models   => [ [ 1, 1 ] ],
   );
   ok $model, 'custom model retrieved';
   is $model->[0], 1, 'intercept param as expected';
+};
+
+subtest 'should perform prediction', sub {
+  my $prediction = ISS::AH::Predictor::predict(
+    age           => 12,
+    body_height   => 130,
+    father_height => 180,
+    bone_age      => 12,
+    sex           => 'male',
+  );
+  is $prediction, 164.6488, 'intercept param as expected';
+
+  $prediction = ISS::AH::Predictor::predict(
+    age => 12
+  );
+  ok !$prediction, 'invalid input, prediction is undef';
 };
 
 done_testing;

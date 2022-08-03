@@ -54,7 +54,7 @@ our $PARAMETER_NAMES = {
   3 => target_height,
   4 => mother_height,
   5 => father_height,
-  6 => bone_age,
+  6 => bone_age_per_age,
   7 => birth_weight,
   8 => sex,
 };
@@ -67,22 +67,36 @@ Provide a hash with properties of a subject to predict adult height (AH).
 You can also provide custom model parameters to overwrite the default once from Blum et al.
 
   my $ah = ISS::AH::Predictor::predict(
-    age           => ...,
-    body_height   => ...,
-    target_height => ...,
-    mother_height => ...,
-    father_height => ...,
-    bone_age      => ...,
-    birth_weight  => ...,
-    sex           => ...,
+    age           => ...,    # years
+    body_height   => ...,    # cm
+    target_height => ...,    # cm
+    mother_height => ...,    # cm
+    father_height => ...,    # cm
+    bone_age      => ...,    # years
+    birth_weight  => ...,    # kg
+    sex           => ...,    # 'male' or 'female'
     models        => [ ... ],
   );
 
 =cut
 
 sub predict {
-  my %params = @_;
-  my $model = get_model(%params) or return undef;
+  my %params = _modify_params(@_);
+  my $model  = get_model(%params) or return undef;
+  my $result = $model->[0]; # intercept
+
+  if (defined $params{sex}) {
+    my $sex = lc $params{sex};
+    $params{sex} = ($sex eq 'male') ? 1 : ($sex eq 'female') ? 2 : undef;
+  }
+
+  while (my ($index, $parameter_name) = each %$PARAMETER_NAMES) {
+    next if ($parameter_name eq 'intercept');
+    next unless (defined $model->[$index] and defined $params{$parameter_name});
+    $result += $model->[$index] * $params{$parameter_name};
+  }
+
+  return $result;
 }
 
 =head2 get_model
@@ -95,22 +109,22 @@ If no model is appropriate, the result is undef.
 If there are multiple matching models (with identical parameter count), the first one will be returned.
 
   my $model = ISS::AH::Predictor::get_model(
-    age           => ...,
-    body_height   => ...,
-    target_height => ...,
-    mother_height => ...,
-    father_height => ...,
-    bone_age      => ...,
-    birth_weight  => ...,
-    sex           => ...,
+    age           => ...,    # years
+    body_height   => ...,    # cm
+    target_height => ...,    # cm
+    mother_height => ...,    # cm
+    father_height => ...,    # cm
+    bone_age      => ...,    # years
+    birth_weight  => ...,    # kg
+    sex           => ...,    # 'male' or 'female'
     models        => [ ... ],
   );
 
 =cut
 
 sub get_model {
-  my %params = @_;
-  my $models = $params{models} || $MODELS;
+  my %params  = _modify_params(@_);
+  my $models  = $params{models} || $MODELS;
   my $results = [];
 
   for my $model (@$models) {
@@ -124,6 +138,15 @@ sub get_model {
   }
 
   return (scalar @$results) ? $results->[0] : undef;
+}
+
+sub _modify_params {
+  my %params = @_;
+
+  $params{bone_age_per_age} = $params{bone_age} / $params{age}
+    if (defined $params{bone_age} and $params{age});
+
+  return %params;
 }
 
 =head1 AUTHOR
