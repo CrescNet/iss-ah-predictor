@@ -13,11 +13,13 @@ subtest 'should modify params', sub {
     age      => 12,
     bone_age => 12,
   );
-  is_deeply \%params, {
+  is_deeply \%params,
+    {
     age              => 12,
     bone_age         => 12,
     bone_age_per_age => 1,
-  }, 'params as expected';
+    },
+    'params as expected';
 };
 
 subtest 'should get model', sub {
@@ -50,8 +52,8 @@ subtest 'should get model', sub {
   ok !$model, 'empty custom models, no model retrieved';
 
   $model = ISS::AH::Predictor::get_model(
-    age => 12,
-    models   => [ [ 1, 1 ] ],
+    age    => 12,
+    models => [ [ 1, 1 ] ],
   );
   ok $model, 'custom model retrieved';
   is $model->[0], 1, 'intercept param as expected';
@@ -67,9 +69,7 @@ subtest 'should perform prediction', sub {
   );
   is $prediction, 164.6488, 'prediction as expected';
 
-  $prediction = ISS::AH::Predictor::predict(
-    age => 12
-  );
+  $prediction = ISS::AH::Predictor::predict(age => 12);
   ok !$prediction, 'invalid input, prediction is undef';
 };
 

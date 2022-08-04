@@ -33,16 +33,16 @@ This attribute contains the default models and parameters, estimated by Blum et 
 =cut
 
 use constant MODELS => [
-  [  63.3339, -2.9595, 0.7256, 0.3173,  undef,  undef, -13.0399, 1.2695,  -6.2213 ],
-  [  62.1795, -2.9892, 0.7328, 0.3442,  undef,  undef, -12.6821,  undef,  -6.3021 ],
-  [  50.3654, -2.6372, 0.6408, 0.3986,  undef,  undef,    undef,  undef,  -5.9171 ],
-  [  80.3645, -3.4309, 0.8241,  undef, 0.2242,  undef, -15.1678, 1.2688, -10.2474 ],
-  [  83.4866, -3.4717, 0.8374,  undef, 0.2234,  undef, -14.7156,  undef, -10.6257 ],
-  [  75.8792, -3.1944, 0.7581,  undef, 0.2449,  undef,    undef,  undef, -10.9519 ],
-  [  93.2475, -3.4020, 0.8239,  undef,  undef, 0.1203, -14.2739, 1.6156, -10.0340 ],
-  [  94.2381, -3.5784, 0.8759,  undef,  undef, 0.1348, -14.2476,  undef, -10.5319 ],
-  [  84.3600, -3.2207, 0.7623,  undef,  undef, 0.1775,    undef,  undef, -10.8759 ],
-  [ 110.8863, -4.1250, 0.9661,  undef,  undef,  undef, -16.0541,  undef, -10.4331 ],
+  [ 63.3339,  -2.9595, 0.7256, 0.3173, undef,  undef,  -13.0399, 1.2695, -6.2213 ],
+  [ 62.1795,  -2.9892, 0.7328, 0.3442, undef,  undef,  -12.6821, undef,  -6.3021 ],
+  [ 50.3654,  -2.6372, 0.6408, 0.3986, undef,  undef,  undef,    undef,  -5.9171 ],
+  [ 80.3645,  -3.4309, 0.8241, undef,  0.2242, undef,  -15.1678, 1.2688, -10.2474 ],
+  [ 83.4866,  -3.4717, 0.8374, undef,  0.2234, undef,  -14.7156, undef,  -10.6257 ],
+  [ 75.8792,  -3.1944, 0.7581, undef,  0.2449, undef,  undef,    undef,  -10.9519 ],
+  [ 93.2475,  -3.4020, 0.8239, undef,  undef,  0.1203, -14.2739, 1.6156, -10.0340 ],
+  [ 94.2381,  -3.5784, 0.8759, undef,  undef,  0.1348, -14.2476, undef,  -10.5319 ],
+  [ 84.3600,  -3.2207, 0.7623, undef,  undef,  0.1775, undef,    undef,  -10.8759 ],
+  [ 110.8863, -4.1250, 0.9661, undef,  undef,  undef,  -16.0541, undef,  -10.4331 ],
 ];
 
 =head2 PARAMETER_NAMES
@@ -87,9 +87,9 @@ You can also provide custom model parameters to overwrite the default once from 
 sub predict {
   my %params = _modify_params(@_);
   my $model  = get_model(%params) or return undef;
-  my $result = $model->[0]; # intercept
+  my $result = $model->[0];                          # intercept
 
-  for my $index (keys %{PARAMETER_NAMES()}) {
+  for my $index (keys %{ PARAMETER_NAMES() }) {
     my $parameter_name = PARAMETER_NAMES->{$index};
     next if ($parameter_name eq 'intercept');
     next unless (defined $model->[$index] and defined $params{$parameter_name});
@@ -129,12 +129,12 @@ sub get_model {
 
   for my $model (@$models) {
     my $match = 1;
-    for my $index (keys %{PARAMETER_NAMES()}) {
+    for my $index (keys %{ PARAMETER_NAMES() }) {
       my $parameter_name = PARAMETER_NAMES->{$index};
       $match = 0 if (defined $model->[$index] and !looks_like_number($model->[$index]));
       next if ($parameter_name eq 'intercept');
       $match = 0 unless (defined $params{$parameter_name} xor !defined $model->[$index]);
-      last unless ($match);
+      last       unless ($match);
     }
     push @$results, $model if ($match);
   }
@@ -153,7 +153,7 @@ sub _modify_params {
     $params{sex} = ($sex eq 'male') ? 1 : ($sex eq 'female') ? 2 : $sex;
   }
 
-  for my $parameter_name (values %{PARAMETER_NAMES()}) {
+  for my $parameter_name (values %{ PARAMETER_NAMES() }) {
     if (defined $params{$parameter_name} and !looks_like_number($params{$parameter_name})) {
       warn "input parameter $parameter_name removed, because value $params{$parameter_name} is not numeric";
       delete $params{$parameter_name};

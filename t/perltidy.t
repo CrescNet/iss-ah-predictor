@@ -4,4 +4,4 @@ use strict;
 use warnings;
 use Test::PerlTidy qw(run_tests);
 
-run_tests(exclude => [ 'local' ]);
+run_tests(exclude => ['local']);
