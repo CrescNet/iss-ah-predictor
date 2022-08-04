@@ -26,9 +26,12 @@ WriteMakefile(
         },
     },
     CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => '7.24' },
-    TEST_REQUIRES      => { 'Test::More' => '1.3' },
-    PREREQ_PM          => { 'Scalar::Util' => '1.4602' },
-    test  => { TESTS => 't/*.t t/*/*.t' },
-    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Iss-Ah-Predictor-*' },
+    TEST_REQUIRES      => {
+        'Test::More'     => '1.3',
+        'Test::PerlTidy' => '20200411',
+    },
+    PREREQ_PM => { 'Scalar::Util' => '1.4602' },
+    test      => { TESTS => 't/*.t t/*/*.t' },
+    dist      => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean     => { FILES => 'Iss-Ah-Predictor-*' },
 );

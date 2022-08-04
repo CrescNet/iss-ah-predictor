@@ -5,5 +5,8 @@ RUN cpanm Carton
 
 WORKDIR /app
 
+COPY cpanfile* ./
+RUN carton install
+
 COPY lib ./lib
 COPY t/ ./t
