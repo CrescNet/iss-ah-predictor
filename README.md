@@ -18,7 +18,7 @@ Depending of the amount of available patient properties, a specific set of param
 ## Installation
 
 ```sh
-cpan iss-ah-predictor
+cpan Iss::Ah::Predictor
 ```
 
 After installing, you can find documentation for this module with the
